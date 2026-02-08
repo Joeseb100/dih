@@ -7,6 +7,10 @@ var stars = 500;
 var colorrange = [0, 60, 240];
 var starArray = [];
 
+// Detect mobile and set frame increment speed
+var isMobile = window.innerWidth < 600;
+var frameIncrement = isMobile ? 3 : 1; // 3x faster on mobile
+
 function getRandom(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -92,10 +96,13 @@ function drawText() {
     context.shadowOffsetX = 0;
     context.shadowOffsetY = 0;
 
+    // Adjust opacity increment speed for mobile
+    var opacityIncrement = isMobile ? 0.03 : 0.01;
+
     if(frameNumber < 250){
         context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
         context.fillText("everyday day I cannot believe how lucky", canvas.width/2, canvas.height/2);
-        opacity = opacity + 0.01;
+        opacity = Math.min(1, opacity + opacityIncrement);
     }
     //hold at full opacity for 5 seconds
     if(frameNumber >= 250 && frameNumber < 550){
@@ -106,7 +113,7 @@ function drawText() {
     if(frameNumber >= 550 && frameNumber < 800){
         context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
         context.fillText("everyday day I cannot believe how lucky", canvas.width/2, canvas.height/2);
-        opacity = opacity - 0.01;
+        opacity = Math.max(0, opacity - opacityIncrement);
     }
 
     //needs this if statement to reset the opacity before next statement on canvas
@@ -122,7 +129,7 @@ function drawText() {
             context.fillText("amongst trillions and trillions of stars, over billions of years", canvas.width/2, canvas.height/2);
         }
 
-        opacity = opacity + 0.01;
+        opacity = Math.min(1, opacity + opacityIncrement);
     }
     if(frameNumber >= 1350 && frameNumber < 1650){
         context.fillStyle = `rgba(45, 45, 255, 1)`;
@@ -142,7 +149,7 @@ function drawText() {
             context.fillText("amongst trillions and trillions of stars, over billions of years", canvas.width/2, canvas.height/2);
         }
 
-        opacity = opacity - 0.01;
+        opacity = Math.max(0, opacity - opacityIncrement);
     }
 
     if(frameNumber == 1900){
@@ -151,7 +158,7 @@ function drawText() {
     if(frameNumber > 2200 && frameNumber < 2450){
         context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
         context.fillText("to be alive, and to get to share this clg with", canvas.width/2, canvas.height/2);
-        opacity = opacity + 0.01;
+        opacity = Math.min(1, opacity + opacityIncrement);
     }
     if(frameNumber >= 2450 && frameNumber < 2750){
         context.fillStyle = `rgba(45, 45, 255, 1)`;
@@ -160,7 +167,7 @@ function drawText() {
     if(frameNumber >= 2750 && frameNumber < 3000){
         context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
         context.fillText("to be alive, and to get to share this clg with", canvas.width/2, canvas.height/2);
-        opacity = opacity - 0.01;
+        opacity = Math.max(0, opacity - opacityIncrement);
     }
 
     if(frameNumber == 3000){
@@ -169,7 +176,7 @@ function drawText() {
     if(frameNumber > 3300 && frameNumber < 3550){
         context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
         context.fillText("is so incredibly, unfathomably unlikely", canvas.width/2, canvas.height/2);
-        opacity = opacity + 0.01;
+        opacity = Math.min(1, opacity + opacityIncrement);
     }
     if(frameNumber >= 3550 && frameNumber < 3850){
         context.fillStyle = `rgba(45, 45, 255, 1)`;
@@ -178,7 +185,7 @@ function drawText() {
     if(frameNumber >= 3850 && frameNumber < 4100){
         context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
         context.fillText("is so incredibly, unfathomably unlikely", canvas.width/2, canvas.height/2);
-        opacity = opacity - 0.01;
+        opacity = Math.max(0, opacity - opacityIncrement);
     }
 
     if(frameNumber == 4100){
@@ -193,7 +200,7 @@ function drawText() {
             context.fillText("and yet here we r to get the impossible chance to know each other", canvas.width/2, canvas.height/2);
         }
 
-        opacity = opacity + 0.01;
+        opacity = Math.min(1, opacity + opacityIncrement);
     }
     if(frameNumber >= 4650 && frameNumber < 4950){
         context.fillStyle = `rgba(45, 45, 255, 1)`;
@@ -213,7 +220,7 @@ function drawText() {
             context.fillText("and yet here we r to get the impossible chance to know each other", canvas.width/2, canvas.height/2);
         }
         
-        opacity = opacity - 0.01;
+        opacity = Math.max(0, opacity - opacityIncrement);
     }
 
     if(frameNumber == 5200){
@@ -228,7 +235,7 @@ function drawText() {
             context.fillText("U too goated Dihh❤️, more than all the atoms and moles the universe can contain", canvas.width/2, canvas.height/2);
         }
 
-        opacity = opacity + 0.01;
+        opacity = Math.min(1, opacity + opacityIncrement);
     }
     if(frameNumber >= 5750 && frameNumber < 99999){
         context.fillStyle = `rgba(45, 45, 255, 1)`;
@@ -250,13 +257,13 @@ function drawText() {
             context.fillText("(pls come more often to canteen!)", canvas.width/2, (canvas.height/2 + 50));
         }
 
-        secondOpacity = secondOpacity + 0.01;
+        secondOpacity = Math.min(1, secondOpacity + opacityIncrement);
     }
 
     if(frameNumber >= 6250 && frameNumber < 99999){
         context.fillStyle = `rgba(45, 45, 255, ${thirdOpacity})`;
         context.fillText("Happy Dihh's Day Dihh❤️<3", canvas.width/2, (canvas.height/2 + 120));
-        thirdOpacity = thirdOpacity + 0.01;
+        thirdOpacity = Math.min(1, thirdOpacity + opacityIncrement);
 
         button.style.display = "block";
     }   
@@ -276,7 +283,7 @@ function draw() {
     drawText();
 
     if (frameNumber < 99999) {
-        frameNumber++;
+        frameNumber += frameIncrement; // Use variable increment speed
     }
     window.requestAnimationFrame(draw);
 }
@@ -285,6 +292,9 @@ window.addEventListener("resize", function () {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     baseFrame = context.getImageData(0, 0, window.innerWidth, window.innerHeight);
+    // Update mobile detection on resize
+    isMobile = window.innerWidth < 600;
+    frameIncrement = isMobile ? 3 : 1;
 });
 
 window.requestAnimationFrame(draw);
