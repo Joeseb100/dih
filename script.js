@@ -53,20 +53,23 @@ const button = document.getElementById("valentinesButton");
 button.addEventListener("click", () => {
   if (button.textContent === "Click Me! ❤") {
     button.textContent = "loading...";
-    fetch('send_mail.php')
-      .then(response => {
-        if (response.ok) {
-          button.textContent = "Check Your Email 🙃";
-        } else {
-          console.error('Failed to send email');
-          button.textContent = "Error 😞";
-        }
-      })
-      .catch(error => {
-        // Handle network errors or other issues
-        console.error('Error:', error);
+    
+    // Using EmailJS for simple email sending
+    emailjs.send("service_8ndysij", "template_na1ns9l", {
+      to_email: "jophits@gmail.com",
+      to_name: "Dhiya",
+      message: "wt if im serious,gn❤️\n\n~j",
+      from_name: "J"
+    }).then(
+      function(response) {
+        console.log('SUCCESS!', response.status, response.text);
+        button.textContent = "Check Your Email 🙃";
+      },
+      function(error) {
+        console.log('FAILED...', error);
         button.textContent = "Error 😞";
-      });
+      }
+    );
   }
 });
 
