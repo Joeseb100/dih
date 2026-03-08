@@ -5,9 +5,21 @@ emailjs.init("VLZ7To3D18IDglE5m");
 const canvas = document.getElementById("starfield");
 const ctx    = canvas.getContext("2d");
 
+// Track logical width/height instead of physical canvas dimensions
+let cw = window.innerWidth;
+let ch = window.innerHeight;
+
 function resizeCanvas() {
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
+    cw = window.innerWidth;
+    ch = window.innerHeight;
+    
+    // Support high-DPI (Retina/Mobile) screens to prevent blurring
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width  = cw * dpr;
+    canvas.height = ch * dpr;
+    
+    // Scale pixel coordinate system back to logical CSS sizes
+    ctx.scale(dpr, dpr);
 }
 resizeCanvas();
 
@@ -22,12 +34,11 @@ const MOBILE_BREAKPT  = 600;
 let isMobile       = window.innerWidth < MOBILE_BREAKPT;
 let frameIncrement = isMobile ? 3 : 1;
 let frameNumber    = 0;
-let baseFrame;
 
 // ─── Stars ───────────────────────────────────────────────────────────────────
 const starArray = Array.from({ length: STAR_COUNT }, () => ({
-    x:       Math.random() * canvas.width,
-    y:       Math.random() * canvas.height,
+    x:       Math.random() * cw,
+    y:       Math.random() * ch,
     radius:  Math.random() * 1.4 + 0.1,
     hue:     COLOR_HUES[Math.floor(Math.random() * COLOR_HUES.length)],
     sat:     Math.floor(Math.random() * 50 + 50),
@@ -51,8 +62,8 @@ function updateStars() {
         }
         // subtle parallax drift
         star.x += star.drift;
-        if (star.x < 0)            star.x = canvas.width;
-        if (star.x > canvas.width) star.x = 0;
+        if (star.x < 0)  star.x = cw;
+        if (star.x > cw) star.x = 0;
     }
 }
 
@@ -118,7 +129,7 @@ function getLines(entry) {
 function drawLines(lines, centerY, fontSize, lineHeight, alpha) {
     ctx.fillStyle = `${TEXT_COLOR} ${alpha})`;
     lines.forEach((line, i) => {
-        ctx.fillText(line, canvas.width / 2, centerY + i * (fontSize + lineHeight));
+        ctx.fillText(line, cw / 2, centerY + i * (fontSize + lineHeight));
     });
 }
 
@@ -126,8 +137,8 @@ function drawText() {
     const fontSize   = Math.min(28, window.innerWidth / 26);
     const lineHeight = 10;
     const fadeSpeed  = isMobile ? 0.03 : 0.01;
-    const cx         = canvas.width / 2;
-    const cy         = canvas.height / 2;
+    const cx         = cw / 2;
+    const cy         = ch / 2;
 
     ctx.font      = `300 ${fontSize}px 'Cormorant Garamond', serif`;
     ctx.textAlign = "center";
@@ -211,7 +222,7 @@ button.addEventListener("click", () => {
 
 // ─── Main Loop ───────────────────────────────────────────────────────────────
 function draw() {
-    ctx.putImageData(baseFrame, 0, 0);
+    ctx.clearRect(0, 0, cw, ch);
 
     drawStars();
     updateStars();
@@ -225,12 +236,10 @@ function draw() {
 }
 
 // ─── Init ────────────────────────────────────────────────────────────────────
-baseFrame = ctx.getImageData(0, 0, canvas.width, canvas.height);
 window.requestAnimationFrame(draw);
 
 window.addEventListener("resize", () => {
     resizeCanvas();
-    baseFrame      = ctx.getImageData(0, 0, canvas.width, canvas.height);
     isMobile       = window.innerWidth < MOBILE_BREAKPT;
     frameIncrement = isMobile ? 3 : 1;
 });
