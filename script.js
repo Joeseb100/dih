@@ -135,6 +135,64 @@ function updateAndDrawTrail() {
     }
 }
 
+// ─── Falling Hearts ────────────────────────────────────────────────────────────
+const heartArray = [];
+const heartEmojis = ["❤️", "💖", "💕", "💘", "💓", "💗"];
+
+function addHeart() {
+    heartArray.push({
+        x: Math.random() * cw,
+        y: -50,                               // Start above screen
+        vx: (Math.random() - 0.5) * 1.5,      // Horizontal drift
+        vy: Math.random() * 1.5 + 1,          // Falling speed
+        size: Math.random() * 15 + 15,        // Font size between 15 and 30
+        emoji: heartEmojis[Math.floor(Math.random() * heartEmojis.length)],
+        rotation: Math.random() * Math.PI * 2,
+        rotSpeed: (Math.random() - 0.5) * 0.05
+    });
+}
+
+function updateAndDrawHearts() {
+    // Add new hearts if we are past the tagline start
+    if (frameNumber >= TAGLINE_START) {
+        if (Math.random() > 0.90) { // Adjust frequency
+            addHeart();
+        }
+    }
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    for (let i = heartArray.length - 1; i >= 0; i--) {
+        const h = heartArray[i];
+
+        h.x += h.vx;
+        h.y += h.vy;
+        h.rotation += h.rotSpeed;
+
+        // Add subtle sine-wave sway to the horizontal movement
+        h.x += Math.sin(h.y / 50) * 0.5;
+
+        // Remove if it falls below screen
+        if (h.y > ch + 50) {
+            heartArray.splice(i, 1);
+            continue;
+        }
+
+        ctx.save();
+        ctx.translate(h.x, h.y);
+        ctx.rotate(h.rotation);
+        ctx.font = `${h.size}px Arial`;
+        
+        // Add a soft glow behind the hearts to match the scene
+        ctx.shadowColor = "rgba(255, 50, 100, 0.4)";
+        ctx.shadowBlur = 10;
+        
+        ctx.fillText(h.emoji, 0, 0);
+        ctx.restore();
+    }
+}
+
 // ─── Text Sequence ───────────────────────────────────────────────────────────
 // Each entry: { lines: string[], linesMobile?: string[], start, hold, end }
 // Frames: fade-in [start → start+250], hold [start+250 → hold], fade-out [hold → end]
@@ -294,6 +352,7 @@ function draw() {
 
     drawStars();
     updateAndDrawTrail();
+    updateAndDrawHearts();
     updateStars();
     drawText();
 
