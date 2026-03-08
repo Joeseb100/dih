@@ -67,6 +67,74 @@ function updateStars() {
     }
 }
 
+// ─── Interactive Mouse Trail ──────────────────────────────────────────────────
+const trailArray = [];
+let mouseX = -100;
+let mouseY = -100;
+
+function addTrailParticle(x, y) {
+    trailArray.push({
+        x: x,
+        y: y,
+        vx: (Math.random() - 0.5) * 1.5,     // horizontal drift
+        vy: (Math.random() * -1.5) - 0.5,    // drift upwards
+        life: 1.0,                           // opacity/life starts at 1
+        size: Math.random() * 4 + 2,         // size between 2 and 6
+        hue: COLOR_HUES[Math.floor(Math.random() * COLOR_HUES.length)]
+    });
+}
+
+window.addEventListener("mousemove", (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    addTrailParticle(mouseX, mouseY);
+});
+
+window.addEventListener("touchmove", (e) => {
+    if (e.touches.length > 0) {
+        mouseX = e.touches[0].clientX;
+        mouseY = e.touches[0].clientY;
+        addTrailParticle(mouseX, mouseY);
+    }
+}, { passive: true });
+
+function updateAndDrawTrail() {
+    // We iterate backwards because we are removing dead particles
+    for (let i = trailArray.length - 1; i >= 0; i--) {
+        const p = trailArray[i];
+        
+        // Update physics
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life -= 0.02; // Fade out speed
+        p.size *= 0.96; // Shrink speed
+        
+        // Remove dead particles
+        if (p.life <= 0 || p.size <= 0.5) {
+            trailArray.splice(i, 1);
+            continue;
+        }
+        
+        // Draw particle (Glassmorphism Glow)
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        
+        // Inner core
+        ctx.fillStyle = `hsla(${p.hue}, 80%, 85%, ${p.life})`;
+        
+        // Deep purple/magenta glow
+        ctx.shadowColor = `hsla(${p.hue}, 90%, 75%, ${p.life})`;
+        ctx.shadowBlur = 12;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
+        
+        ctx.fill();
+        
+        // Reset shadow for the rest of the canvas
+        ctx.shadowBlur = 0;
+    }
+}
+
 // ─── Text Sequence ───────────────────────────────────────────────────────────
 // Each entry: { lines: string[], linesMobile?: string[], start, hold, end }
 // Frames: fade-in [start → start+250], hold [start+250 → hold], fade-out [hold → end]
@@ -225,6 +293,7 @@ function draw() {
     ctx.clearRect(0, 0, cw, ch);
 
     drawStars();
+    updateAndDrawTrail();
     updateStars();
     drawText();
 
