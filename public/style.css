@@ -1,34 +1,88 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 html, body {
-    margin: 0 !important;
-    padding: 0 !important;
     overflow: hidden;
     cursor: url('./images/pointer.png'), auto;
+    background: #0a0a0f;
 }
 
 canvas {
+    display: block;
     width: 100%;
-    height: auto;
-    background: #111;
+    height: 100%;
+    background: #0a0a0f;
 }
 
 #valentinesButton {
     display: none;
     position: absolute;
-    background-color: #2d2dff;
-    border: 2px solid #2d2dff;
-    color: #fff;
-    cursor: pointer;
-    height: 50px;
-    font-size: 16px;
-    font-family: "Comic Sans MS", cursive, sans-serif;
-    border-radius: 10px;
-    top: calc(50% + 150px); /* Adjust based on canvas height and text position */
+    bottom: auto;
+    top: calc(50% + 160px);
     left: 50%;
     transform: translateX(-50%);
-    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
-  }
 
-  #valentinesButton:hover {
-    background-color: #1f1faa;
-    color: #eee;
+    /* Shape & spacing */
+    padding: 14px 36px;
+    border-radius: 50px;
+    border: 1px solid rgba(160, 140, 255, 0.45);
+
+    /* Colors */
+    background: rgba(20, 18, 40, 0.6);
+    color: rgba(210, 200, 255, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    /* Typography */
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+
+    /* Glow */
+    box-shadow:
+        0 0 18px rgba(130, 100, 255, 0.2),
+        inset 0 0 18px rgba(130, 100, 255, 0.05);
+
+    cursor: pointer;
+    transition:
+        background 0.4s ease,
+        box-shadow 0.4s ease,
+        border-color 0.4s ease,
+        color 0.4s ease,
+        transform 0.3s ease;
+
+    animation: buttonPulse 3s ease-in-out infinite;
+    white-space: nowrap;
+}
+
+#valentinesButton:hover {
+    background: rgba(90, 70, 180, 0.35);
+    border-color: rgba(190, 170, 255, 0.7);
+    box-shadow:
+        0 0 32px rgba(150, 120, 255, 0.45),
+        inset 0 0 24px rgba(150, 120, 255, 0.1);
+    color: #fff;
+    transform: translateX(-50%) translateY(-2px);
+}
+
+#valentinesButton:active {
+    transform: translateX(-50%) translateY(0px);
+}
+
+@keyframes buttonPulse {
+    0%, 100% {
+        box-shadow:
+            0 0 18px rgba(130, 100, 255, 0.2),
+            inset 0 0 18px rgba(130, 100, 255, 0.05);
+    }
+    50% {
+        box-shadow:
+            0 0 28px rgba(150, 120, 255, 0.38),
+            inset 0 0 22px rgba(150, 120, 255, 0.08);
+    }
 }
